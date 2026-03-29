@@ -78,6 +78,13 @@ export const SUNDAY_LUNCH_OPTIONS = [
     { id: "wraps", name: "Turkey Wraps + Bar + Apple", calories: 875, protein: 76, carbs: 85, fat: 30 },
 ];
 
+export const PRE_BOCCE_OPTIONS = [
+    { id: "tuna_rice", name: "Tuna Rice Bowl TO-GO", calories: 430, protein: 47, carbs: 45, fat: 11 },
+    { id: "chicken_sp", name: "Chicken & Sweet Potato TO-GO", calories: 440, protein: 53, carbs: 40, fat: 8 },
+    { id: "beef_sp", name: "Ground Beef & Sweet Potato TO-GO", calories: 608, protein: 45, carbs: 49, fat: 26 },
+    { id: "roti_chicken", name: "Rotisserie Chicken & Fruit TO-GO", calories: 350, protein: 45, carbs: 25, fat: 8 },
+];
+
 export const SUNDAY_MEAL3 = [
     { id: "cubano", name: "Sol Food Cubano", calories: 750, protein: 50, carbs: 65, fat: 35 },
 ];
@@ -97,7 +104,7 @@ export const PRIORITY_LIFTS = [
 export const WORKOUT_TEMPLATES = {
     0: null,
     1: {
-        name: "Upper Push + HIIT", time: "4:30 PM", duration: "65 min",
+        name: "Upper Push (Strength Only)", time: "4:30 PM", duration: "50 min",
         priorityLifts: ["ohp", "bench"],
         exercises: [
             { name: "Overhead Press", priority: true, sets: 4, reps: "6-8" },
@@ -107,10 +114,10 @@ export const WORKOUT_TEMPLATES = {
             { name: "Overhead Tricep Ext", sets: 3, reps: "10-12" },
             { name: "Pallof Press", sets: 3, reps: "12/side" },
         ],
-        finisher: "HIIT: Burpees / Mt. Climbers / Jump Squats x 3-4 rds",
+        finisher: null,
     },
     2: {
-        name: "Lower Body + Core + Zone 2", time: "4:30 PM", duration: "75 min",
+        name: "Lower Body + Core + HIIT Finisher", time: "4:30 PM", duration: "75 min",
         priorityLifts: ["goblet_squat"],
         exercises: [
             { name: "Goblet Squat", priority: true, sets: 4, reps: "8-10" },
@@ -120,16 +127,16 @@ export const WORKOUT_TEMPLATES = {
             { name: "Farmer's Carries", sets: 3, reps: "40 yds" },
             { name: "Russian Twists", sets: 3, reps: "20 total" },
         ],
-        finisher: "Zone 2 Cardio: 20 min",
+        finisher: "HIIT: Burpees / Mt. Climbers / Jump Squats x 3-4 rds",
     },
     3: {
         name: "AM Zone 2 Cardio", time: "9:00 AM", duration: "30 min",
         priorityLifts: [],
         exercises: [{ name: "Zone 2 Cardio (fasted)", sets: 1, reps: "30 min" }],
-        finisher: null,
+        finisher: "Optional HIIT: 3 rounds (15 min)",
     },
     4: {
-        name: "Upper Pull + HIIT", time: "4:30 PM", duration: "65 min",
+        name: "Upper Pull", time: "4:30 PM", duration: "50 min",
         priorityLifts: ["deadlift"],
         exercises: [
             { name: "Deadlift", priority: true, sets: 4, reps: "5-6" },
@@ -140,10 +147,10 @@ export const WORKOUT_TEMPLATES = {
             { name: "Hammer Curls", sets: 3, reps: "10-12" },
             { name: "Face Pulls", sets: 3, reps: "15-20" },
         ],
-        finisher: "HIIT: Rowing / Battle Ropes / KB Swings x 3-4 rds",
+        finisher: null,
     },
     5: {
-        name: "Lower Body + Posterior + Zone 2", time: "4:30 PM", duration: "75 min",
+        name: "Lower Body + Posterior + HIIT + Zone 2", time: "4:30 PM", duration: "75 min",
         priorityLifts: ["back_squat"],
         exercises: [
             { name: "Back Squat", priority: true, sets: 3, reps: "8-10" },
@@ -153,7 +160,7 @@ export const WORKOUT_TEMPLATES = {
             { name: "Leg Curls", sets: 3, reps: "12-15" },
             { name: "Suitcase Carries", sets: 3, reps: "30 yds/side" },
         ],
-        finisher: "Zone 2 Cardio: 20 min",
+        finisher: "HIIT x 3-4 rds + Zone 2: 20 min",
     },
     6: {
         name: "HIIT + Mobility", time: "10:00 AM", duration: "50 min",
@@ -174,49 +181,49 @@ export const WORKOUT_TEMPLATES = {
 export const getMealSlots = (dow) => {
     const base = {
         0: [
-            { id: "m1", name: "Breakfast", time: "8:00 AM", type: "fixed", fixedKey: "sunday_breakfast" },
+            { id: "m1", name: "Breakfast", time: "8:00 AM", type: "fixed_or_offscript", fixedKey: "sunday_breakfast" },
             { id: "m2", name: "Portable Lunch", time: "11:30 AM", type: "dropdown", options: SUNDAY_LUNCH_OPTIONS },
             { id: "m3", name: "Sol Food / Restaurant", time: "2:30 PM", type: "dropdown_or_offscript", options: SUNDAY_MEAL3 },
             { id: "m4", name: "Refeed Dinner", time: "5:30 PM", type: "dinner_builder" },
             { id: "m5", name: "Optional Snack", time: "8:00 PM", type: "snack", options: SNACK_OPTIONS },
         ],
         1: [
-            { id: "m1", name: "Breakfast", time: "8:00 AM", type: "fixed", fixedKey: "standard_breakfast" },
-            { id: "m2", name: "Lunch", time: "12:00 PM", type: "dropdown", options: LUNCH_OPTIONS, defaultId: "chicken_sp" },
+            { id: "m1", name: "Breakfast", time: "8:00 AM", type: "fixed_or_offscript", fixedKey: "standard_breakfast" },
+            { id: "m2", name: "Lunch", time: "12:00 PM", type: "dropdown", options: LUNCH_OPTIONS, defaultId: "chicken_rice_lg" },
             { id: "m3", name: "Pre-Workout Shake", time: "3:00 PM", type: "fixed", fixedKey: "pre_workout_shake" },
-            { id: "m4", name: "Dinner", time: "6:30 PM", type: "dinner_builder" },
-            { id: "m5", name: "Optional Snack", time: "7:30 PM", type: "snack", options: SNACK_OPTIONS },
+            { id: "m4", name: "Pre-Bocce TO-GO", time: "6:15 PM", type: "dropdown", options: PRE_BOCCE_OPTIONS, defaultId: "tuna_rice" },
+            { id: "m5", name: "Post-Bocce Snack", time: "8:30 PM", type: "snack", options: SNACK_OPTIONS, defaultId: "yogurt_half" },
         ],
         2: [
-            { id: "m1", name: "Breakfast", time: "8:00 AM", type: "fixed", fixedKey: "standard_breakfast" },
+            { id: "m1", name: "Breakfast", time: "8:00 AM", type: "fixed_or_offscript", fixedKey: "standard_breakfast" },
             { id: "m2", name: "Lunch", time: "12:00 PM", type: "dropdown", options: LUNCH_OPTIONS, defaultId: "tuna_bowl" },
             { id: "m3", name: "Pre-Workout Shake", time: "3:00 PM", type: "fixed", fixedKey: "pre_workout_shake" },
             { id: "m4", name: "Dinner", time: "6:30 PM", type: "dinner_builder" },
             { id: "m5", name: "Optional Snack", time: "7:45 PM", type: "snack", options: SNACK_OPTIONS },
         ],
         3: [
-            { id: "m1", name: "Post-Cardio Breakfast", time: "9:30 AM", type: "fixed", fixedKey: "standard_breakfast" },
+            { id: "m1", name: "Post-Cardio Breakfast", time: "9:30 AM", type: "fixed_or_offscript", fixedKey: "standard_breakfast" },
             { id: "m2", name: "Lunch", time: "12:30 PM", type: "dropdown", options: LUNCH_OPTIONS, defaultId: "chicken_rice" },
             { id: "m3", name: "Afternoon Snack", time: "3:30 PM", type: "fixed", fixedKey: "wednesday_shake" },
-            { id: "m4", name: "Pre-Bocce TO-GO", time: "6:15 PM", type: "dropdown", options: LUNCH_OPTIONS, defaultId: "tuna_rice" },
-            { id: "m5", name: "Post-Bocce Snack", time: "8:30 PM", type: "snack", options: SNACK_OPTIONS },
+            { id: "m4", name: "Pre-Bocce TO-GO", time: "6:15 PM", type: "dropdown", options: PRE_BOCCE_OPTIONS, defaultId: "tuna_rice" },
+            { id: "m5", name: "Post-Bocce Snack", time: "8:30 PM", type: "snack", options: SNACK_OPTIONS, defaultId: "yogurt_half" },
         ],
         4: [
-            { id: "m1", name: "Breakfast", time: "8:00 AM", type: "fixed", fixedKey: "standard_breakfast" },
+            { id: "m1", name: "Breakfast", time: "8:00 AM", type: "fixed_or_offscript", fixedKey: "standard_breakfast" },
             { id: "m2", name: "Lunch", time: "12:00 PM", type: "dropdown", options: LUNCH_OPTIONS, defaultId: "chicken_rice_lg" },
             { id: "m3", name: "Pre-Workout Shake", time: "3:00 PM", type: "fixed", fixedKey: "pre_workout_shake" },
-            { id: "m4", name: "Pre-Bocce Dinner", time: "6:15 PM", type: "dinner_builder" },
-            { id: "m5", name: "Post-Bocce Snack", time: "8:30 PM", type: "snack", options: SNACK_OPTIONS },
+            { id: "m4", name: "Pre-Bocce TO-GO", time: "6:15 PM", type: "dropdown", options: PRE_BOCCE_OPTIONS, defaultId: "beef_sp" },
+            { id: "m5", name: "Post-Bocce Snack", time: "8:30 PM", type: "snack", options: SNACK_OPTIONS, defaultId: "yogurt_full" },
         ],
         5: [
-            { id: "m1", name: "Breakfast", time: "8:00 AM", type: "fixed", fixedKey: "standard_breakfast" },
+            { id: "m1", name: "Breakfast", time: "8:00 AM", type: "fixed_or_offscript", fixedKey: "standard_breakfast" },
             { id: "m2", name: "Lunch", time: "12:00 PM", type: "dropdown", options: LUNCH_OPTIONS, defaultId: "tuna_sandwich" },
             { id: "m3", name: "Pre-Workout Shake", time: "3:00 PM", type: "fixed", fixedKey: "pre_workout_shake" },
             { id: "m4", name: "Dinner", time: "6:30 PM", type: "dinner_builder" },
             { id: "m5", name: "Optional Snack", time: "7:45 PM", type: "snack", options: SNACK_OPTIONS },
         ],
         6: [
-            { id: "m1", name: "Post-Workout Brunch", time: "11:30 AM", type: "fixed", fixedKey: "saturday_brunch" },
+            { id: "m1", name: "Post-Workout Brunch", time: "11:30 AM", type: "fixed_or_offscript", fixedKey: "saturday_brunch" },
             { id: "m2", name: "Afternoon Snack", time: "3:00 PM", type: "fixed", fixedKey: "saturday_snack" },
             { id: "m3", name: "Date Night Dinner", time: "6:30 PM", type: "dropdown_or_offscript", options: DATE_NIGHT_TEMPLATES },
         ],

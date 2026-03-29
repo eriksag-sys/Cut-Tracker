@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { FIXED_MEALS, DINNER_PROTEINS, DINNER_CARBS, DINNER_VEGGIES } from "../data.js";
 
 export default function MealLoggerModal({ slot, meal, onSave, onClose }) {
-    const [mode, setMode] = useState(slot.type === "dinner_builder" ? "builder" : slot.type === "fixed" ? "fixed" : "dropdown");
+    const [mode, setMode] = useState(slot.type === "dinner_builder" ? "builder" : (slot.type === "fixed" || slot.type === "fixed_or_offscript") ? "fixed" : "dropdown");
     const [selectedId, setSelectedId] = useState("");
     const [offScript, setOffScript] = useState({ name: "", calories: "", protein: "", carbs: "", fat: "" });
 
@@ -131,14 +131,17 @@ export default function MealLoggerModal({ slot, meal, onSave, onClose }) {
                 </div>
                 <div className="text-xs text-white/40 mb-3">{slot.time}</div>
 
-                {/* Mode tabs for dropdown_or_offscript and dinner_builder */}
-                {(slot.type === "dropdown_or_offscript" || slot.type === "dinner_builder") && (
+                {/* Mode tabs for dropdown_or_offscript, dinner_builder, and fixed_or_offscript */}
+                {(slot.type === "dropdown_or_offscript" || slot.type === "dinner_builder" || slot.type === "fixed_or_offscript") && (
                     <div className="flex gap-1 mb-4 bg-white/5 rounded-lg p-1">
                         {slot.type === "dinner_builder" && (
                             <button onClick={() => setMode("builder")} className={`flex-1 py-1.5 rounded-md text-xs font-medium transition-colors ${mode === "builder" ? "bg-blue-600" : "hover:bg-white/10"}`}>Builder</button>
                         )}
-                        {slot.options && (
+                        {(slot.type === "dropdown_or_offscript" && slot.options) && (
                             <button onClick={() => setMode("dropdown")} className={`flex-1 py-1.5 rounded-md text-xs font-medium transition-colors ${mode === "dropdown" ? "bg-blue-600" : "hover:bg-white/10"}`}>Menu</button>
+                        )}
+                        {slot.type === "fixed_or_offscript" && (
+                            <button onClick={() => setMode("fixed")} className={`flex-1 py-1.5 rounded-md text-xs font-medium transition-colors ${mode === "fixed" ? "bg-blue-600" : "hover:bg-white/10"}`}>Standard</button>
                         )}
                         <button onClick={() => setMode("offscript")} className={`flex-1 py-1.5 rounded-md text-xs font-medium transition-colors ${mode === "offscript" ? "bg-blue-600" : "hover:bg-white/10"}`}>Off-Script</button>
                     </div>

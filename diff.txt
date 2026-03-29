@@ -1,0 +1,96 @@
+diff --git a/src/components/MealLoggerModal.jsx b/src/components/MealLoggerModal.jsx
+index 7b5a23e..a047b91 100644
+--- a/src/components/MealLoggerModal.jsx
++++ b/src/components/MealLoggerModal.jsx
+@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
+ import { FIXED_MEALS, DINNER_PROTEINS, DINNER_CARBS, DINNER_VEGGIES } from "../data.js";
+ 
+ export default function MealLoggerModal({ slot, meal, onSave, onClose }) {
+-    const [mode, setMode] = useState(slot.type === "dinner_builder" ? "builder" : slot.type === "fixed" ? "fixed" : "dropdown");
++    const [mode, setMode] = useState(slot.type === "dinner_builder" ? "builder" : (slot.type === "fixed" || slot.type === "fixed_or_offscript") ? "fixed" : "dropdown");
+     const [selectedId, setSelectedId] = useState("");
+     const [offScript, setOffScript] = useState({ name: "", calories: "", protein: "", carbs: "", fat: "" });
+ 
+@@ -131,15 +131,18 @@ export default function MealLoggerModal({ slot, meal, onSave, onClose }) {
+                 </div>
+                 <div className="text-xs text-white/40 mb-3">{slot.time}</div>
+ 
+-                {/* Mode tabs for dropdown_or_offscript and dinner_builder */}
+-                {(slot.type === "dropdown_or_offscript" || slot.type === "dinner_builder") && (
++                {/* Mode tabs for dropdown_or_offscript, dinner_builder, and fixed_or_offscript */}
++                {(slot.type === "dropdown_or_offscript" || slot.type === "dinner_builder" || slot.type === "fixed_or_offscript") && (
+                     <div className="flex gap-1 mb-4 bg-white/5 rounded-lg p-1">
+                         {slot.type === "dinner_builder" && (
+                             <button onClick={() => setMode("builder")} className={`flex-1 py-1.5 rounded-md text-xs font-medium transition-colors ${mode === "builder" ? "bg-blue-600" : "hover:bg-white/10"}`}>Builder</button>
+                         )}
+-                        {slot.options && (
++                        {(slot.type === "dropdown_or_offscript" && slot.options) && (
+                             <button onClick={() => setMode("dropdown")} className={`flex-1 py-1.5 rounded-md text-xs font-medium transition-colors ${mode === "dropdown" ? "bg-blue-600" : "hover:bg-white/10"}`}>Menu</button>
+                         )}
++                        {slot.type === "fixed_or_offscript" && (
++                            <button onClick={() => setMode("fixed")} className={`flex-1 py-1.5 rounded-md text-xs font-medium transition-colors ${mode === "fixed" ? "bg-blue-600" : "hover:bg-white/10"}`}>Standard</button>
++                        )}
+                         <button onClick={() => setMode("offscript")} className={`flex-1 py-1.5 rounded-md text-xs font-medium transition-colors ${mode === "offscript" ? "bg-blue-600" : "hover:bg-white/10"}`}>Off-Script</button>
+                     </div>
+                 )}
+diff --git a/src/data.js b/src/data.js
+index 993b8c3..9ea3fa8 100644
+--- a/src/data.js
++++ b/src/data.js
+@@ -174,49 +174,49 @@ export const WORKOUT_TEMPLATES = {
+ export const getMealSlots = (dow) => {
+     const base = {
+         0: [
+-            { id: "m1", name: "Breakfast", time: "8:00 AM", type: "fixed", fixedKey: "sunday_breakfast" },
++            { id: "m1", name: "Breakfast", time: "8:00 AM", type: "fixed_or_offscript", fixedKey: "sunday_breakfast" },
+             { id: "m2", name: "Portable Lunch", time: "11:30 AM", type: "dropdown", options: SUNDAY_LUNCH_OPTIONS },
+             { id: "m3", name: "Sol Food / Restaurant", time: "2:30 PM", type: "dropdown_or_offscript", options: SUNDAY_MEAL3 },
+             { id: "m4", name: "Refeed Dinner", time: "5:30 PM", type: "dinner_builder" },
+             { id: "m5", name: "Optional Snack", time: "8:00 PM", type: "snack", options: SNACK_OPTIONS },
+         ],
+         1: [
+-            { id: "m1", name: "Breakfast", time: "8:00 AM", type: "fixed", fixedKey: "standard_breakfast" },
++            { id: "m1", name: "Breakfast", time: "8:00 AM", type: "fixed_or_offscript", fixedKey: "standard_breakfast" },
+             { id: "m2", name: "Lunch", time: "12:00 PM", type: "dropdown", options: LUNCH_OPTIONS, defaultId: "chicken_sp" },
+             { id: "m3", name: "Pre-Workout Shake", time: "3:00 PM", type: "fixed", fixedKey: "pre_workout_shake" },
+             { id: "m4", name: "Dinner", time: "6:30 PM", type: "dinner_builder" },
+             { id: "m5", name: "Optional Snack", time: "7:30 PM", type: "snack", options: SNACK_OPTIONS },
+         ],
+         2: [
+-            { id: "m1", name: "Breakfast", time: "8:00 AM", type: "fixed", fixedKey: "standard_breakfast" },
++            { id: "m1", name: "Breakfast", time: "8:00 AM", type: "fixed_or_offscript", fixedKey: "standard_breakfast" },
+             { id: "m2", name: "Lunch", time: "12:00 PM", type: "dropdown", options: LUNCH_OPTIONS, defaultId: "tuna_bowl" },
+             { id: "m3", name: "Pre-Workout Shake", time: "3:00 PM", type: "fixed", fixedKey: "pre_workout_shake" },
+             { id: "m4", name: "Dinner", time: "6:30 PM", type: "dinner_builder" },
+             { id: "m5", name: "Optional Snack", time: "7:45 PM", type: "snack", options: SNACK_OPTIONS },
+         ],
+         3: [
+-            { id: "m1", name: "Post-Cardio Breakfast", time: "9:30 AM", type: "fixed", fixedKey: "standard_breakfast" },
++            { id: "m1", name: "Post-Cardio Breakfast", time: "9:30 AM", type: "fixed_or_offscript", fixedKey: "standard_breakfast" },
+             { id: "m2", name: "Lunch", time: "12:30 PM", type: "dropdown", options: LUNCH_OPTIONS, defaultId: "chicken_rice" },
+             { id: "m3", name: "Afternoon Snack", time: "3:30 PM", type: "fixed", fixedKey: "wednesday_shake" },
+             { id: "m4", name: "Pre-Bocce TO-GO", time: "6:15 PM", type: "dropdown", options: LUNCH_OPTIONS, defaultId: "tuna_rice" },
+             { id: "m5", name: "Post-Bocce Snack", time: "8:30 PM", type: "snack", options: SNACK_OPTIONS },
+         ],
+         4: [
+-            { id: "m1", name: "Breakfast", time: "8:00 AM", type: "fixed", fixedKey: "standard_breakfast" },
++            { id: "m1", name: "Breakfast", time: "8:00 AM", type: "fixed_or_offscript", fixedKey: "standard_breakfast" },
+             { id: "m2", name: "Lunch", time: "12:00 PM", type: "dropdown", options: LUNCH_OPTIONS, defaultId: "chicken_rice_lg" },
+             { id: "m3", name: "Pre-Workout Shake", time: "3:00 PM", type: "fixed", fixedKey: "pre_workout_shake" },
+             { id: "m4", name: "Pre-Bocce Dinner", time: "6:15 PM", type: "dinner_builder" },
+             { id: "m5", name: "Post-Bocce Snack", time: "8:30 PM", type: "snack", options: SNACK_OPTIONS },
+         ],
+         5: [
+-            { id: "m1", name: "Breakfast", time: "8:00 AM", type: "fixed", fixedKey: "standard_breakfast" },
++            { id: "m1", name: "Breakfast", time: "8:00 AM", type: "fixed_or_offscript", fixedKey: "standard_breakfast" },
+             { id: "m2", name: "Lunch", time: "12:00 PM", type: "dropdown", options: LUNCH_OPTIONS, defaultId: "tuna_sandwich" },
+             { id: "m3", name: "Pre-Workout Shake", time: "3:00 PM", type: "fixed", fixedKey: "pre_workout_shake" },
+             { id: "m4", name: "Dinner", time: "6:30 PM", type: "dinner_builder" },
+             { id: "m5", name: "Optional Snack", time: "7:45 PM", type: "snack", options: SNACK_OPTIONS },
+         ],
+         6: [
+-            { id: "m1", name: "Post-Workout Brunch", time: "11:30 AM", type: "fixed", fixedKey: "saturday_brunch" },
++            { id: "m1", name: "Post-Workout Brunch", time: "11:30 AM", type: "fixed_or_offscript", fixedKey: "saturday_brunch" },
+             { id: "m2", name: "Afternoon Snack", time: "3:00 PM", type: "fixed", fixedKey: "saturday_snack" },
+             { id: "m3", name: "Date Night Dinner", time: "6:30 PM", type: "dropdown_or_offscript", options: DATE_NIGHT_TEMPLATES },
+         ],
